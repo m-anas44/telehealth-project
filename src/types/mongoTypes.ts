@@ -66,4 +66,5 @@ export interface MedicalHistoryTypes {
   medications?: string[];
   tests?: string[];
   reports?: string[];
+  xrays?: string[];
 }

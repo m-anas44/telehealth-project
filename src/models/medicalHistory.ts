@@ -10,6 +10,7 @@ const medicalHistorySchema = new Schema<MedicalHistoryTypes>(
     medications: [{ type: String }],
     tests: [{ type: String }],
     reports: [{ type: String }],
+    xrays: [{ type: String }],
   },
   { timestamps: true },
 );
