@@ -23,6 +23,7 @@ export interface DoctorProfileTypes extends Document {
   licenseNo: string;
   experienceYears: number;
   specialization: string[];
+  bio: string;
   clinicalAddress: string;
   isActive: boolean;
 }

@@ -68,7 +68,7 @@ export const sidebarLinksByRole: SidebarLinksByRole = {
     {
       icon: <FileText className="w-5 h-5" />,
       label: "Consultations",
-      page: "consultation",
+      page: "consultations",
     },
     {
       icon: <User className="w-5 h-5" />,

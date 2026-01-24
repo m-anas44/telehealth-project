@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { signUpHandler } from "@/handlers/authHandler";
-import { signupSchema } from "@/schemas/auth/signup.schema";
+import { signupSchema } from "@/schemas/auth/signup";
 import { useRouter } from "next/navigation";
 
 const Signup: React.FC = () => {

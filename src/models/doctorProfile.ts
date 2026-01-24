@@ -10,24 +10,26 @@ const DoctorProfileSchema: Schema<DoctorProfileTypes> = new Schema(
     },
     licenseNo: {
       type: String,
-      required: true,
-      unique: true,
       trim: true,
     },
     experienceYears: {
       type: Number,
-      required: true,
       min: 0,
     },
+    // allow multiple specializations; optional and can be empty
     specialization: {
       type: [String],
-      required: true,
-      validate: [(val: string[]) => val.length > 0, "At least one specialization is required"],
+      default: [],
     },
     clinicalAddress: {
-        type: String,
-        required: true,
-        trim: true,
+      type: String,
+      trim: true,
+    },
+    // free-form professional bio
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
     },
     isActive: {
       type: Boolean,

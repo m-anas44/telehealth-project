@@ -1,0 +1,313 @@
+import { Calendar, Clock, FileText, Users } from "lucide-react";
+
+export const specOptions = [
+  "MBBS",
+  "General Practitioner",
+  "Family Medicine",
+  "Internal Medicine",
+  "Pediatrics",
+  "Cardiology",
+  "Dermatology",
+  "Neurology",
+  "Orthopedics",
+  "Orthopedic Surgery",
+  "Psychiatry",
+  "Endocrinology",
+  "Gastroenterology",
+  "Pulmonology",
+  "Nephrology",
+  "Rheumatology",
+  "Oncology",
+  "Hematology",
+  "Obstetrics & Gynecology",
+  "ENT (Otolaryngology)",
+  "Ophthalmology",
+  "Anesthesiology",
+  "Radiology",
+  "Pathology",
+  "Emergency Medicine",
+  "Sports Medicine",
+  "Geriatrics",
+  "Infectious Disease",
+  "Plastic Surgery",
+  "Urology",
+  "Neurosurgery",
+  "Pain Medicine",
+  "Palliative Care",
+  "Rehabilitation Medicine",
+  "Occupational Medicine",
+  "Dental/Oral Surgery",
+  "Clinical Genetics",
+  "Public Health",
+  "Preventive Medicine",
+  "Cosmetic Medicine",
+  "Sleep Medicine",
+  "Addiction Medicine",
+  "Other",
+];
+
+export const todayAppointments = [
+  {
+    id: "1",
+    patient: "John Smith",
+    time: "10:00 AM",
+    type: "Video Consultation",
+    reason: "Follow-up - Hypertension",
+    status: "upcoming",
+    avatar: "JS",
+  },
+  {
+    id: "2",
+    patient: "Emily Davis",
+    time: "11:30 AM",
+    type: "In-Person",
+    reason: "Annual Physical",
+    status: "upcoming",
+    avatar: "ED",
+  },
+  {
+    id: "3",
+    patient: "Michael Brown",
+    time: "2:00 PM",
+    type: "Video Consultation",
+    reason: "New Patient Consultation",
+    status: "upcoming",
+    avatar: "MB",
+  },
+];
+
+export const stats = [
+  {
+    label: "Today's Appointments",
+    value: "5",
+    change: "+2 from yesterday",
+    icon: <Calendar className="w-6 h-6 text-[#0891b2]" />,
+    bg: "bg-[#e0f2fe]",
+  },
+  {
+    label: "Total Patients",
+    value: "142",
+    change: "+8 this month",
+    icon: <Users className="w-6 h-6 text-[#10b981]" />,
+    bg: "bg-[#d1fae5]",
+  },
+  {
+    label: "Pending Reviews",
+    value: "12",
+    change: "Lab results & reports",
+    icon: <FileText className="w-6 h-6 text-[#f59e0b]" />,
+    bg: "bg-[#fef3c7]",
+  },
+  {
+    label: "Avg. Consultation",
+    value: "28 min",
+    change: "This week",
+    icon: <Clock className="w-6 h-6 text-[#8b5cf6]" />,
+    bg: "bg-[#f3e8ff]",
+  },
+];
+
+export const recentPatients = [
+  {
+    id: "1",
+    name: "Sarah Williams",
+    lastVisit: "2026-01-14",
+    condition: "Diabetes Type 2",
+    status: "Stable",
+    avatar: "SW",
+  },
+  {
+    id: "2",
+    name: "Robert Johnson",
+    lastVisit: "2026-01-12",
+    condition: "Hypertension",
+    status: "Monitoring",
+    avatar: "RJ",
+  },
+  {
+    id: "3",
+    name: "Lisa Anderson",
+    lastVisit: "2026-01-10",
+    condition: "Annual Checkup",
+    status: "Healthy",
+    avatar: "LA",
+  },
+];
+
+// patient page mock data
+export const patients = [
+  {
+    id: "1",
+    name: "John Smith",
+    avatar: "JS",
+    age: 45,
+    gender: "Male",
+    condition: "Hypertension",
+    lastVisit: "2026-01-10",
+    nextAppointment: "2026-01-18",
+    status: "Active",
+    riskLevel: "Medium",
+  },
+  {
+    id: "2",
+    name: "Emily Davis",
+    avatar: "ED",
+    age: 32,
+    gender: "Female",
+    condition: "Annual Checkup",
+    lastVisit: "2026-01-08",
+    nextAppointment: "2026-01-20",
+    status: "Active",
+    riskLevel: "Low",
+  },
+  {
+    id: "3",
+    name: "Michael Brown",
+    avatar: "MB",
+    age: 58,
+    gender: "Male",
+    condition: "Diabetes Type 2",
+    lastVisit: "2026-01-05",
+    nextAppointment: "2026-01-22",
+    status: "Active",
+    riskLevel: "High",
+  },
+  {
+    id: "4",
+    name: "Sarah Williams",
+    avatar: "SW",
+    age: 41,
+    gender: "Female",
+    condition: "Diabetes Type 2",
+    lastVisit: "2025-12-28",
+    nextAppointment: "2026-01-25",
+    status: "Active",
+    riskLevel: "Medium",
+  },
+  {
+    id: "5",
+    name: "Robert Johnson",
+    avatar: "RJ",
+    age: 52,
+    gender: "Male",
+    condition: "Hypertension",
+    lastVisit: "2025-12-20",
+    nextAppointment: null,
+    status: "Inactive",
+    riskLevel: "Low",
+  },
+];
+
+// Mock doctor page consultation data
+export const patientData = {
+  name: "John Smith",
+  avatar: "JS",
+  age: 45,
+  gender: "Male",
+  bloodType: "A+",
+  allergies: "Penicillin",
+};
+
+export const medicalHistory = [
+  {
+    id: "1",
+    date: "2026-01-10",
+    diagnosis: "Hypertension Stage 1",
+    doctor: "Dr. Sarah Johnson",
+    notes: "Blood pressure consistently above 130/80",
+  },
+  {
+    id: "2",
+    date: "2025-11-15",
+    diagnosis: "Vitamin D Deficiency",
+    doctor: "Dr. Michael Chen",
+    notes: "Prescribed supplements",
+  },
+];
+
+export const currentMedications = [
+  {
+    id: "1",
+    name: "Lisinopril 10mg",
+    dosage: "Once daily",
+    prescribedDate: "2026-01-10",
+    status: "Active",
+  },
+  {
+    id: "2",
+    name: "Vitamin D3 2000 IU",
+    dosage: "Once daily",
+    prescribedDate: "2025-11-15",
+    status: "Active",
+  },
+];
+
+export const documents = [
+  {
+    id: "1",
+    name: "Blood Test Results",
+    type: "Lab Report",
+    date: "2026-01-10",
+  },
+  {
+    id: "2",
+    name: "Chest X-Ray",
+    type: "Imaging",
+    date: "2025-12-20",
+  },
+];
+
+
+// doctor page schedule data
+export const appointments = [
+    {
+      id: '1',
+      patient: 'John Smith',
+      avatar: 'JS',
+      time: '09:00 AM',
+      duration: '30 min',
+      type: 'Video Consultation',
+      reason: 'Follow-up - Hypertension',
+      status: 'confirmed',
+    },
+    {
+      id: '2',
+      patient: 'Emily Davis',
+      avatar: 'ED',
+      time: '10:00 AM',
+      duration: '45 min',
+      type: 'In-Person',
+      reason: 'Annual Physical Examination',
+      status: 'confirmed',
+    },
+    {
+      id: '3',
+      patient: 'Michael Brown',
+      avatar: 'MB',
+      time: '11:00 AM',
+      duration: '30 min',
+      type: 'Video Consultation',
+      reason: 'New Patient Consultation',
+      status: 'confirmed',
+    },
+    {
+      id: '4',
+      patient: 'Sarah Williams',
+      avatar: 'SW',
+      time: '02:00 PM',
+      duration: '30 min',
+      type: 'Video Consultation',
+      reason: 'Diabetes Management',
+      status: 'confirmed',
+    },
+    {
+      id: '5',
+      patient: 'Robert Johnson',
+      avatar: 'RJ',
+      time: '03:00 PM',
+      duration: '30 min',
+      type: 'In-Person',
+      reason: 'Blood Pressure Check',
+      status: 'pending',
+    },
+  ];
