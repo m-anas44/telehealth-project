@@ -25,6 +25,35 @@ export interface DoctorProfileTypes extends Document {
   specialization: string[];
   bio: string;
   clinicalAddress: string;
+  availability?: {
+    weekly: {
+      day: string;
+      isAvailable: boolean;
+      startTime?: string;
+      endTime?: string;
+    }[];
+  };
+  consultationDuration: number; // minutes
+  bufferTime: number; // minutes
+  consultationTypes: {
+    video: boolean;
+    inPerson: boolean;
+    phone: boolean;
+  };
+  documents: {
+    medicalLicense?: {
+      url: string;
+      publicId: string;
+    };
+    boardCertification?: {
+      url: string;
+      publicId: string;
+    };
+    deaCertificate?: {
+      url: string;
+      publicId: string;
+    };
+  };
   isActive: boolean;
 }
 

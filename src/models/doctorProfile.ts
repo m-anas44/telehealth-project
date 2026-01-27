@@ -16,7 +16,6 @@ const DoctorProfileSchema: Schema<DoctorProfileTypes> = new Schema(
       type: Number,
       min: 0,
     },
-    // allow multiple specializations; optional and can be empty
     specialization: {
       type: [String],
       default: [],
@@ -25,11 +24,56 @@ const DoctorProfileSchema: Schema<DoctorProfileTypes> = new Schema(
       type: String,
       trim: true,
     },
-    // free-form professional bio
     bio: {
       type: String,
       default: "",
       trim: true,
+    },
+    availability: {
+      weekly: [
+        {
+          day: {
+            type: String,
+          },
+          isAvailable: {
+            type: Boolean,
+            default: false,
+          },
+          startTime: {
+            type: String,
+          },
+          endTime: {
+            type: String,
+          },
+        },
+      ],
+    },
+    consultationDuration: {
+      type: Number, // minutes
+      default: 30,
+    },
+    bufferTime: {
+      type: Number, // minutes
+      default: 0,
+    },
+    consultationTypes: {
+      video: { type: Boolean, default: true },
+      inPerson: { type: Boolean, default: true },
+      phone: { type: Boolean, default: false },
+    },
+    documents: {
+      medicalLicense: {
+        url: String,
+        publicId: String,
+      },
+      boardCertification: {
+        url: String,
+        publicId: String,
+      },
+      deaCertificate: {
+        url: String,
+        publicId: String,
+      },
     },
     isActive: {
       type: Boolean,
