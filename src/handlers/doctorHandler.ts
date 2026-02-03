@@ -84,3 +84,58 @@ export async function updateConsultationSettings(payload: any) {
   );
   return data;
 }
+
+export async function getCredentials() {
+  try {
+    const { data } = await axios.get("/api/doctor/credentials", { withCredentials: true });
+    return data ?? null;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || err?.message || "Failed to fetch credentials");
+  }
+}
+
+export async function updateCredentials(payload: any) {
+  try {
+    const { data } = await axios.put("/api/doctor/credentials", payload, { withCredentials: true });
+    return data;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || err?.message || "Failed to update credentials");
+  }
+}
+
+export async function getUploadUrl(fileName: string, fileType: string, category: string) {
+  try {
+    const { data } = await axios.post(
+      "/api/doctor/credentials/upload-url",
+      { fileName, fileType, category },
+      { withCredentials: true },
+    );
+    return data;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || err?.message || "Failed to get upload url");
+  }
+}
+
+export const getViewUrl = async (key: string) => {
+  try {
+    const { data } = await axios.get(`/api/upload-url?key=${key}`);
+    console.log(data)
+    return data.url;
+  } catch (err: any) {
+    console.error("Axios Error in getViewUrl:", err);
+    throw new Error(err.response?.data?.message || "Failed to get view URL");
+  }
+};
+
+export async function saveDocument({ key, category, fileName }: { key: string; category: string; fileName?: string }) {
+  try {
+    const { data } = await axios.post(
+      "/api/doctor/credentials/documents",
+      { key, category, fileName },
+      { withCredentials: true },
+    );
+    return data;
+  } catch (err: any) {
+    throw new Error(err?.response?.data?.message || err?.message || "Failed to save document");
+  }
+}

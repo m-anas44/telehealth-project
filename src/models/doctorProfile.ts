@@ -12,10 +12,18 @@ const DoctorProfileSchema: Schema<DoctorProfileTypes> = new Schema(
       type: String,
       trim: true,
     },
+    licenseState: {
+      type: String,
+      trim: true,
+    },
+    licenseExpiration: {
+      type: Date,
+    },
     experienceYears: {
       type: Number,
       min: 0,
     },
+    // allow multiple specializations; optional and can be empty
     specialization: {
       type: [String],
       default: [],
@@ -27,6 +35,18 @@ const DoctorProfileSchema: Schema<DoctorProfileTypes> = new Schema(
     bio: {
       type: String,
       default: "",
+      trim: true,
+    },
+    medicalSchool: {
+      type: String,
+      trim: true,
+    },
+    residencyProgram: {
+      type: String,
+      trim: true,
+    },
+    boardNameOfCertification: {
+      type: String,
       trim: true,
     },
     availability: {

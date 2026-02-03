@@ -21,9 +21,14 @@ export interface PatientProfileTypes extends Document {
 export interface DoctorProfileTypes extends Document {
   userId: mongoose.Types.ObjectId | string;
   licenseNo: string;
+  licenseState: string;
+  licenseExpiration: Date;
   experienceYears: number;
   specialization: string[];
   bio: string;
+  medicalSchool: string;
+  residencyProgram: string;
+  boardNameOfCertification: string;
   clinicalAddress: string;
   availability?: {
     weekly: {
