@@ -19,7 +19,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Missing key" }, { status: 400 });
 
     const url = await getDownloadPresignedURL(key);
-    return NextResponse.json({url}, { status: 200 });
+
+    return NextResponse.json({ url }, { status: 200 });
   } catch (err) {
     return NextResponse.json(
       { message: "Failed to get view url" },
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const role = "doctor" as const;
+    const role = "patient" as const;
     const userId = session.user.id;
 
     const { url, key } = await getUploadPresignedURL(

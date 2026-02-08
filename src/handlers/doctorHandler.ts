@@ -118,8 +118,9 @@ export async function getUploadUrl(fileName: string, fileType: string, category:
 
 export const getViewUrl = async (key: string) => {
   try {
-    const { data } = await axios.get(`/api/upload-url?key=${key}`);
-    console.log(data)
+    const { data } = await axios.get("/api/doctor/credentials/upload-url", {
+      params: { key } 
+    });
     return data.url;
   } catch (err: any) {
     console.error("Axios Error in getViewUrl:", err);

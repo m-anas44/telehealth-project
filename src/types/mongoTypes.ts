@@ -96,9 +96,16 @@ export interface MedicalHistoryTypes {
   _id?: mongoose.Types.ObjectId;
   patientId: mongoose.Types.ObjectId;
   condition: string;
+  type: "allergy" | "chronic" | "past_surgery" | "other";
+  isCurrent: boolean;
   diagnosisDate?: Date;
   notes?: string;
   medications?: string[];
+  attachments?: {
+    name: string;
+    key: string;
+    fileType: string;
+  }[];
   tests?: string[];
   reports?: string[];
   xrays?: string[];

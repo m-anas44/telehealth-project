@@ -59,15 +59,20 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          image: user.image,
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.image = user.image;
+      }
+      if (trigger === "update" && session?.image) {
+        token.image = session.image;
       }
       return token;
     },
@@ -75,6 +80,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as "patient" | "doctor" | "admin";
+        session.user.image = token.image as string;
       }
       return session;
     },

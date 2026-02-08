@@ -36,7 +36,6 @@ export async function PUT(req: Request) {
     if (!session?.user) return unauthorized();
 
     const body = await req.json();
-    console.log("body: ", body);
     const {
       licenseNo,
       licenseState,
@@ -66,13 +65,11 @@ export async function PUT(req: Request) {
 
     await connectDB();
 
-    const updatedProfile = await DoctorProfile.findOneAndUpdate(
+    await DoctorProfile.findOneAndUpdate(
       { userId: session.user.id },
       { $set: updateData, isActive: true },
       { new: true },
     );
-
-    console.log("Updated Profile in DB:", updatedProfile);
 
     return NextResponse.json(
       { message: "Credentials updated" },
