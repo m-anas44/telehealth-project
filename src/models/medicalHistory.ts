@@ -1,20 +1,38 @@
+import mongoose, { Schema, Types } from "mongoose";
 import { MedicalHistoryTypes } from "@/types/mongoTypes";
-import mongoose, { Model, Schema, Types } from "mongoose";
 
 const medicalHistorySchema = new Schema<MedicalHistoryTypes>(
   {
-    patientId: { type: Types.ObjectId, required: true, ref: "User" },
-    condition: { type: String, required: true }, // e.g., "Asthma"
-    type: { type: String, enum: ["allergy", "chronic", "past_surgery", "other"], default: "chronic" },
-    diagnosisDate: { type: Date },
-    isCurrent: { type: Boolean, default: true }, // Kya ye abhi bhi hai?
+    patientId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+      unique: true,
+    },
+    allergies: [{ type: String, trim: true }],
+    chronicConditions: [{ type: String, trim: true }],
+    documents: [
+      {
+        name: { type: String, required: true },
+        category: {
+          type: String,
+          enum: ["report", "xray", "prescription", "other"],
+          default: "report",
+        },
+        key: { type: String, required: true },
+        fileType: { type: String },
+        url: { type: String },
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
+
     notes: { type: String },
-    medications: [{ type: String }], // Jo wo khud le raha hai
-    attachments: [{ // S3 keys for reports/xrays
-      name: String,
-      key: String,
-      fileType: String
-    }],
   },
   { timestamps: true },
 );
+
+const MedicalHistory: mongoose.Model<MedicalHistoryTypes> =
+  mongoose.models.MedicalHistory ||
+  mongoose.model("MedicalHistory", medicalHistorySchema);
+
+export default MedicalHistory;

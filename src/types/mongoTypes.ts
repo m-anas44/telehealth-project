@@ -95,18 +95,15 @@ export interface ClinicalEncounterTypes {
 export interface MedicalHistoryTypes {
   _id?: mongoose.Types.ObjectId;
   patientId: mongoose.Types.ObjectId;
-  condition: string;
-  type: "allergy" | "chronic" | "past_surgery" | "other";
-  isCurrent: boolean;
-  diagnosisDate?: Date;
-  notes?: string;
-  medications?: string[];
-  attachments?: {
+  allergies: string[];
+  chronicConditions: string[];
+  documents: {
     name: string;
+    category: "report" | "xray" | "prescription" | "other";
     key: string;
     fileType: string;
+    url?: string;
+    uploadedAt: Date;
   }[];
-  tests?: string[];
-  reports?: string[];
-  xrays?: string[];
+  notes?: string;
 }
