@@ -28,5 +28,5 @@ const PatientProfileSchema: Schema<PatientProfileTypes> = new Schema(
   },
 );
 export const patientProfile: Model<PatientProfileTypes> =
-  mongoose.models.patientProfile ||
+  mongoose.models.PatientProfile ||
   mongoose.model<PatientProfileTypes>("PatientProfile", PatientProfileSchema);

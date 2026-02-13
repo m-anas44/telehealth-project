@@ -35,12 +35,12 @@ export const sidebarLinksByRole: SidebarLinksByRole = {
     {
       icon: <FileText className="w-5 h-5" />,
       label: "Medical History",
-      page: "medical-history",
+      page: "medicalHistory",
     },
     {
       icon: <MessageSquare className="w-5 h-5" />,
       label: "Messages",
-      page: "chat",
+      page: "messages",
     },
     {
       icon: <User className="w-5 h-5" />,
