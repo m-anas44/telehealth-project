@@ -22,7 +22,9 @@ const BookAppointmentModal = ({
   showBooking,
   setShowBooking,
 }: any) => {
-  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<any>(
+    doctors?.length === 1 ? doctors[0] : null
+  );
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
 

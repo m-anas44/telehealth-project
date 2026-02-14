@@ -3,6 +3,7 @@ import {
   ProfessionalInput,
   ProfessionalSchema,
 } from "@/schemas/doctor/professionalInfoSchema";
+import { DoctorsResponse } from "@/types/doctorTypes";
 
 export async function getProfessionalInfo() {
   try {
@@ -87,23 +88,39 @@ export async function updateConsultationSettings(payload: any) {
 
 export async function getCredentials() {
   try {
-    const { data } = await axios.get("/api/doctor/credentials", { withCredentials: true });
+    const { data } = await axios.get("/api/doctor/credentials", {
+      withCredentials: true,
+    });
     return data ?? null;
   } catch (err: any) {
-    throw new Error(err?.response?.data?.message || err?.message || "Failed to fetch credentials");
+    throw new Error(
+      err?.response?.data?.message ||
+        err?.message ||
+        "Failed to fetch credentials",
+    );
   }
 }
 
 export async function updateCredentials(payload: any) {
   try {
-    const { data } = await axios.put("/api/doctor/credentials", payload, { withCredentials: true });
+    const { data } = await axios.put("/api/doctor/credentials", payload, {
+      withCredentials: true,
+    });
     return data;
   } catch (err: any) {
-    throw new Error(err?.response?.data?.message || err?.message || "Failed to update credentials");
+    throw new Error(
+      err?.response?.data?.message ||
+        err?.message ||
+        "Failed to update credentials",
+    );
   }
 }
 
-export async function getUploadUrl(fileName: string, fileType: string, category: string) {
+export async function getUploadUrl(
+  fileName: string,
+  fileType: string,
+  category: string,
+) {
   try {
     const { data } = await axios.post(
       "/api/doctor/credentials/upload-url",
@@ -112,14 +129,18 @@ export async function getUploadUrl(fileName: string, fileType: string, category:
     );
     return data;
   } catch (err: any) {
-    throw new Error(err?.response?.data?.message || err?.message || "Failed to get upload url");
+    throw new Error(
+      err?.response?.data?.message ||
+        err?.message ||
+        "Failed to get upload url",
+    );
   }
 }
 
 export const getViewUrl = async (key: string) => {
   try {
     const { data } = await axios.get("/api/doctor/credentials/upload-url", {
-      params: { key } 
+      params: { key },
     });
     return data.url;
   } catch (err: any) {
@@ -128,7 +149,15 @@ export const getViewUrl = async (key: string) => {
   }
 };
 
-export async function saveDocument({ key, category, fileName }: { key: string; category: string; fileName?: string }) {
+export async function saveDocument({
+  key,
+  category,
+  fileName,
+}: {
+  key: string;
+  category: string;
+  fileName?: string;
+}) {
   try {
     const { data } = await axios.post(
       "/api/doctor/credentials/documents",
@@ -137,6 +166,35 @@ export async function saveDocument({ key, category, fileName }: { key: string; c
     );
     return data;
   } catch (err: any) {
-    throw new Error(err?.response?.data?.message || err?.message || "Failed to save document");
+    throw new Error(
+      err?.response?.data?.message || err?.message || "Failed to save document",
+    );
+  }
+}
+
+export async function getDoctors({
+  query = "",
+  page = 1,
+  limit = 10,
+}: {
+  query?: string;
+  page?: number;
+  limit?: number;
+} = {}): Promise<DoctorsResponse | null> {
+  try {
+    const params = new URLSearchParams({
+      query,
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    const { data } = await axios.get(`/api/doctor?${params.toString()}`, {
+      withCredentials: true,
+    });
+console.log("fron handler: ", data)
+    return data;
+  } catch (error) {
+    console.error("API Error:", error);
+    return null;
   }
 }
