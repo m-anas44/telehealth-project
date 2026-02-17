@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
       DoctorProfile.find(filter)
         .limit(limit)
         .skip(skip)
-        .select("userId specialization experienceYears bio isActive consultationTypes")
-        .populate("userId", "name email image city")
+        .select("userId specialization experienceYears bio isActive consultationTypes availability clinicalAddress bufferTime consultationDuration")
+        .populate("userId", "name image city")
         .lean(),
       DoctorProfile.countDocuments(filter),
     ]);

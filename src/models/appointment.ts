@@ -13,9 +13,13 @@ const AppointmentSchema: Schema<AppointmentTypes> = new Schema(
       ref: "PatientProfile",
       required: true,
     },
-    scheduleAt: {
+    day: {
       type: Date,
       required: true,
+    },
+    time: {
+      type: Date,
+      required: true
     },
     status: {
       type: String,
@@ -24,7 +28,7 @@ const AppointmentSchema: Schema<AppointmentTypes> = new Schema(
     },
     type: {
       type: String,
-      enum: ["online", "in-person"],
+      enum: ["online", "in-person", "phone"],
       required: true,
     },
   },

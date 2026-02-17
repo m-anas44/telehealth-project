@@ -42,9 +42,10 @@ export default function BookAppointmentPage() {
   const fetchDoctors = useCallback(async (query: string) => {
     setLoading(true);
     const data = await getDoctors({ query, limit: 12 });
-    console.log(data);
+    console.log("doctors: ", data);
     if (data) {
       setDoctors(data.profiles);
+      console.log(data.profiles);
     }
     setLoading(false);
   }, []);
@@ -58,13 +59,14 @@ export default function BookAppointmentPage() {
   }, [searchQuery, fetchDoctors]);
 
   const handleOpenBooking = (doctor: any) => {
+    console.log("page doctor: ", doctor);
     setSelectedDoctor(doctor);
-    setBookingStep(2);
+    setBookingStep(1);
     setShowBooking(true);
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
+    <div className="max-w-7xl mx-auto space-y-5">
       {/* --- Breadcrumbs --- */}
       <Breadcrumb>
         <BreadcrumbList>
@@ -83,10 +85,10 @@ export default function BookAppointmentPage() {
       {/* --- Header Section --- */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-xl md:text-3xl font-bold tracking-tight text-gray-900">
             Find Your Doctor
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground text-sm md:text-base mt-1">
             Search from thousands of certified specialists.
           </p>
         </div>
@@ -108,17 +110,17 @@ export default function BookAppointmentPage() {
       </div>
 
       {/* --- Search & Filter Bar --- */}
-      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border shadow-sm">
+      <div className="flex flex-col md:flex-row gap-3 bg-white p-4 rounded-2xl border shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
             placeholder="Search by name, specialty, or hospital..."
-            className="pl-10 h-11 border-none bg-gray-50 focus-visible:ring-1"
+            className="pl-10 border-none bg-gray-50 focus-visible:ring-1"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Select>
-            <SelectTrigger className="w-40 h-11 bg-gray-50 border-none">
+            <SelectTrigger className="w-40 bg-gray-50 border-none">
               <SelectValue placeholder="Specialty" />
             </SelectTrigger>
             <SelectContent>
@@ -127,7 +129,7 @@ export default function BookAppointmentPage() {
               <SelectItem value="gp">General Physician</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" className="h-11 px-5 border-dashed">
+          <Button variant="outline" className="px-5 border-dashed">
             <Filter className="w-4 h-4 mr-2" />
             More Filters
           </Button>
@@ -146,7 +148,7 @@ export default function BookAppointmentPage() {
             <DoctorCard
               key={doctor._id}
               doctor={{
-                id: doctor._id,
+                id: doctor.userId._id,
                 name: doctor.userId.name,
                 bio: doctor.bio,
                 specialization:
@@ -157,7 +159,7 @@ export default function BookAppointmentPage() {
                 city: doctor.userId.city,
                 consultationTypes: doctor.consultationTypes,
                 image: doctor.userId.image,
-                isActive: doctor.isActive ? "Available" : "Away",
+                isActive: doctor.isActive,
               }}
               handleOpenBooking={() => handleOpenBooking(doctor)}
             />
@@ -176,10 +178,16 @@ export default function BookAppointmentPage() {
         <BookAppointmentModal
           doctors={[
             {
-              id: selectedDoctor._id,
+              id: selectedDoctor.userId._id,
               name: selectedDoctor.userId.name,
-              specialty: selectedDoctor.specialty,
-              avatar: selectedDoctor.userId.name.charAt(0),
+              image: selectedDoctor.userId.image,
+              specialization: selectedDoctor.specialization,
+              availability: selectedDoctor.availability,
+              consultationDuration: selectedDoctor.consultationDuration,
+              bufferTime: selectedDoctor.bufferTime,
+              clinicalAddress: selectedDoctor.clinicalAddress,
+              consultationTypes: selectedDoctor.consultationTypes,
+              isActive: selectedDoctor.isActive,
             },
           ]}
           bookingStep={bookingStep}

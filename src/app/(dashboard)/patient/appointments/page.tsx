@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Filter, Plus, Search } from "lucide-react";
 import AppointmentCard from "../_components/appointments/AppointmentCard";
@@ -9,10 +9,46 @@ import BookAppointmentModal from "../_components/appointments/BookAppointmentMod
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import AIAppointment from "../_components/appointments/AIAppointment";
+import { getPatientAppointments } from "@/handlers/appointmentHanlder";
+
+interface AppointmentTypes {
+  data: {
+    pending: [];
+    confirmed: [];
+    completed: [];
+    cancelled: [];
+  };
+}
 
 const Appointments = () => {
   const [showBooking, setShowBooking] = useState(false);
   const [bookingStep, setBookingStep] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  // States for real data
+  const [upcomingApts, setUpcomingApts] = useState([]);
+  const [pastApts, setPastApts] = useState([]);
+
+  // Fetch data on mount
+  useEffect(() => {
+    const fetchApts = async () => {
+      try {
+        setLoading(true);
+        const { data }: AppointmentTypes = await getPatientAppointments();
+        console.log("doctors apointment data: ", data)
+        const upcoming = [...data.pending, ...data.confirmed];
+        const past = [...data?.completed];
+
+        setUpcomingApts(upcoming);
+        setPastApts(past);
+      } catch (err) {
+        console.error("Failed to load appointments");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchApts();
+  }, []);
 
   const doctors = [
     {

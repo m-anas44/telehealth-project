@@ -65,7 +65,8 @@ export interface DoctorProfileTypes extends Document {
 export interface AppointmentTypes extends Document {
   doctorId: mongoose.Types.ObjectId | string;
   patientId: mongoose.Types.ObjectId | string;
-  scheduleAt: Date;
+  day: Date;
+  time: Date;
   status: "pending" | "confirmed" | "completed" | "cancelled";
   type: "online" | "in-person";
 }

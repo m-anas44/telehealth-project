@@ -93,7 +93,7 @@ const Signin: React.FC = () => {
         setError(res.message || "Signin failed");
       }
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
+      setError("Something went wrong");
     } finally {
       setLoading(false);
     }

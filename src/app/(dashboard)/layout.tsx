@@ -17,7 +17,7 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen">
       <DashboardSidebarClient user={session.user} />
-      <main className="flex-1 p-6 md:ml-64">{children}</main>
+      <main className="flex-1 p-3 md:p-6 md:ml-64">{children}</main>
     </div>
   );
 }
