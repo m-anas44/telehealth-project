@@ -2,21 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Filter, Plus, Search } from "lucide-react";
+import { Filter, Loader2, Plus, Search } from "lucide-react";
 import AppointmentCard from "../_components/appointments/AppointmentCard";
 import PastAppointmentCard from "../_components/appointments/PastAppointmentCard";
-import BookAppointmentModal from "../_components/appointments/BookAppointmentModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import AIAppointment from "../_components/appointments/AIAppointment";
 import { getPatientAppointments } from "@/handlers/appointmentHanlder";
 
-interface AppointmentTypes {
+interface Appointment {
+  _id: string;
+  doctorName: string;
+  doctorImage: string;
+  specialization: string[];
+  status: string;
+  time: string;
+  day: string;
+  type: string;
+}
+
+interface AppointmentResponse {
   data: {
-    pending: [];
-    confirmed: [];
-    completed: [];
-    cancelled: [];
+    pending: Appointment[];
+    confirmed: Appointment[];
+    completed: Appointment[];
+    cancelled: Appointment[];
   };
 }
 
@@ -26,101 +36,36 @@ const Appointments = () => {
   const [loading, setLoading] = useState(true);
 
   // States for real data
-  const [upcomingApts, setUpcomingApts] = useState([]);
-  const [pastApts, setPastApts] = useState([]);
+  const [upcomingApts, setUpcomingApts] = useState<Appointment[]>([]);
+  const [pastApts, setPastApts] = useState<Appointment[]>([]);
+  const [missedApts, setMissedApts] = useState<Appointment[]>([]);
 
-  // Fetch data on mount
   useEffect(() => {
     const fetchApts = async () => {
       try {
         setLoading(true);
-        const { data }: AppointmentTypes = await getPatientAppointments();
-        console.log("doctors apointment data: ", data)
-        const upcoming = [...data.pending, ...data.confirmed];
-        const past = [...data?.completed];
 
-        setUpcomingApts(upcoming);
-        setPastApts(past);
+        const res: AppointmentResponse = await getPatientAppointments();
+        const categorized = res?.data;
+
+        if (categorized) {
+          setUpcomingApts([
+            ...(categorized.pending || []),
+            ...(categorized.confirmed || []),
+          ]);
+
+          setPastApts([...(categorized.completed || [])]);
+          setMissedApts([...(categorized.cancelled || [])]);
+        }
       } catch (err) {
-        console.error("Failed to load appointments");
+        console.error("Failed to load appointments", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchApts();
   }, []);
-
-  const doctors = [
-    {
-      id: "1",
-      name: "Dr. Sarah Johnson",
-      specialty: "Cardiologist",
-      experience: "15 years",
-      rating: 4.9,
-      avatar: "SJ",
-      available: true,
-    },
-    {
-      id: "2",
-      name: "Dr. Michael Chen",
-      specialty: "General Physician",
-      experience: "10 years",
-      rating: 4.8,
-      avatar: "MC",
-      available: true,
-    },
-    {
-      id: "3",
-      name: "Dr. Emily Davis",
-      specialty: "Dermatologist",
-      experience: "12 years",
-      rating: 4.9,
-      avatar: "ED",
-      available: true,
-    },
-  ];
-
-  const appointments = [
-    {
-      id: "1",
-      doctor: "Dr. Sarah Johnson",
-      specialty: "Cardiologist",
-      date: "2026-01-18",
-      time: "10:00 AM",
-      type: "Video Consultation",
-      status: "confirmed",
-    },
-    {
-      id: "2",
-      doctor: "Dr. Michael Chen",
-      specialty: "General Physician",
-      date: "2026-01-22",
-      time: "2:30 PM",
-      type: "In-Person",
-      status: "pending",
-    },
-  ];
-
-  const pastAppointments = [
-    {
-      id: "3",
-      doctor: "Dr. Sarah Johnson",
-      specialty: "Cardiologist",
-      date: "2026-01-05",
-      time: "11:00 AM",
-      type: "Video Consultation",
-      status: "completed",
-    },
-    {
-      id: "4",
-      doctor: "Dr. Emily Davis",
-      specialty: "Dermatologist",
-      date: "2025-12-28",
-      time: "3:00 PM",
-      type: "In-Person",
-      status: "completed",
-    },
-  ];
 
   return (
     <div className="space-y-6">
@@ -150,32 +95,56 @@ const Appointments = () => {
       <Tabs defaultValue="upcoming">
         <TabsList>
           <TabsTrigger value="upcoming">
-            Upcoming ({appointments.length})
+            Upcoming ({upcomingApts.length})
           </TabsTrigger>
           <TabsTrigger value="past">Past Consultations</TabsTrigger>
+          <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="upcoming" className="space-y-4 mt-4">
-          {appointments.map((apt) => (
-            <AppointmentCard apt={apt} key={apt.id} />
-          ))}
-        </TabsContent>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-gray-400" />
+          </div>
+        ) : (
+          <>
+            <TabsContent value="upcoming" className="space-y-4 mt-4">
+              {upcomingApts.length > 0 ? (
+                upcomingApts.map((apt) => (
+                  <AppointmentCard apt={apt} key={apt._id} />
+                ))
+              ) : (
+                <div className="text-center py-10 rounded-lg text-gray-500">
+                  No upcoming appointments found
+                </div>
+              )}
+            </TabsContent>
 
-        <TabsContent value="past" className="space-y-4 mt-4">
-          {pastAppointments.map((apt) => (
-            <PastAppointmentCard apt={apt} key={apt.id} />
-          ))}
-        </TabsContent>
+            <TabsContent value="past" className="space-y-4 mt-4">
+              {pastApts.length > 0 ? (
+                pastApts.map((apt) => (
+                  <AppointmentCard apt={apt} key={apt._id} />
+                ))
+              ) : (
+                <div className="text-center py-10 rounded-lg text-gray-500">
+                  No past appointments found
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="cancelled" className="space-y-4 mt-4">
+              {missedApts.length > 0 ? (
+                missedApts.map((apt) => (
+                  <AppointmentCard apt={apt} key={apt._id} />
+                ))
+              ) : (
+                <div className="text-center py-10 rounded-lg text-gray-500">
+                  No cancelled appointments found
+                </div>
+              )}
+            </TabsContent>
+          </>
+        )}
       </Tabs>
-
-      {/* Booking Dialog */}
-      <BookAppointmentModal
-        doctors={doctors}
-        bookingStep={bookingStep}
-        setBookingStep={setBookingStep}
-        showBooking={showBooking}
-        setShowBooking={setShowBooking}
-      />
     </div>
   );
 };

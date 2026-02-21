@@ -1,15 +1,17 @@
+import connectDB from "@/db/connectDB";
 import { authOptions } from "@/lib/auth";
 import { Appointment } from "@/models/appointment";
 import { DoctorProfile } from "@/models/doctorProfile";
+import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { Types } from "mongoose";
 
 const unauthorized = () =>
   NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 export async function GET() {
   try {
+    await connectDB()
     const session = await getServerSession(authOptions);
     if (!session?.user) return unauthorized();
 
@@ -22,16 +24,23 @@ export async function GET() {
       .populate("doctorId", "name image")
       .lean();
 
-    const doctorUserIds = [
-      ...new Set(
-        appointments
-          .map((a: any) => a.doctorId?._id?.toString())
-          .filter(Boolean),
-      ),
-    ];
+      console.log("apposintments: ", appointments)
+
+    if (!appointments.length) {
+      return NextResponse.json({
+        message: "No appointments found",
+        data: { pending: [], confirmed: [], completed: [], cancelled: [] }
+      });
+    }
+
+    const doctorIds = appointments
+      .map((a: any) => a.doctorId?._id)
+      .filter(Boolean);
+
+    console.log("doctor ids: ", doctorIds);
 
     const doctorProfiles = await DoctorProfile.find({
-      userId: { $in: doctorUserIds },
+      userId: { $in: doctorIds },
     })
       .select("userId specialization")
       .lean();
@@ -47,7 +56,7 @@ export async function GET() {
 
       return {
         ...apt,
-        doctorName: apt.doctorId?.name || "",
+        doctorName: apt.doctorId?.name || "Unknown",
         doctorImage: apt.doctorId?.image || "",
         specialization: doctorId ? profileMap[doctorId] || [] : [],
       };
@@ -65,6 +74,8 @@ export async function GET() {
         (a: any) => a.status === "cancelled",
       ),
     };
+
+    console.log("categorized data: ", categorizedData)
 
     return NextResponse.json(
       {

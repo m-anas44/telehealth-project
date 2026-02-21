@@ -5,12 +5,12 @@ const AppointmentSchema: Schema<AppointmentTypes> = new Schema(
   {
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "DoctorProfile",
+      ref: "User",
       required: true,
     },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "PatientProfile",
+      ref: "User",
       required: true,
     },
     day: {
