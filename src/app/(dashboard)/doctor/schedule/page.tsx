@@ -26,6 +26,7 @@ const SchedulePage: React.FC<DoctorScheduleProps> = ({ onPatientSelect }) => {
   const currentWeek = weekDays.map((day, index) => ({
     day,
     date: index + 13,
+    // eslint-disable-next-line security/detect-object-injection
     appointments:
       index === 2 ? appointments.length : Math.floor(Math.random() * 5) + 1,
   }));
