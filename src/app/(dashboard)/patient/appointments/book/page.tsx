@@ -3,12 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  ChevronRight,
   Filter,
   Loader2,
   Search,
-  Sparkles,
-  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +27,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getDoctors } from "@/handlers/doctorHandler";
+import AISuggestionBanner from "../../_components/appointments/AISuggestionBanner";
 
 export default function BookAppointmentPage() {
   const [showBooking, setShowBooking] = useState(false);
@@ -68,7 +66,7 @@ export default function BookAppointmentPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-5">
       {/* --- Breadcrumbs --- */}
-      <Breadcrumb>
+      <Breadcrumb className="border-b border-gray-200 pb-2">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
@@ -94,19 +92,7 @@ export default function BookAppointmentPage() {
         </div>
 
         {/* AI Suggestion Banner */}
-        <div className="flex items-center gap-3 bg-cyan-50 border border-cyan-100 p-3 rounded-xl">
-          <div className="bg-white p-2 rounded-lg shadow-sm">
-            <Sparkles className="w-5 h-5 text-[#0891b2]" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-cyan-900 uppercase tracking-wider">
-              AI Recommendation
-            </p>
-            <p className="text-sm text-cyan-700">
-              Dr. Sarah is your most visited specialist.
-            </p>
-          </div>
-        </div>
+        <AISuggestionBanner />
       </div>
 
       {/* --- Search & Filter Bar --- */}

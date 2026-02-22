@@ -20,7 +20,7 @@ const ProfessionInfo = ({ user }: { user: any }) => {
   const [initial, setInitial] = useState<any>({});
 
   const [name, setName] = useState(user?.name ?? "");
-  const [email, setEmail] = useState(user?.email ?? "");
+  const [city, setCity] = useState(user?.city ?? "");
   const [phone, setPhone] = useState("");
   const [specialization, setSpecialization] = useState<string[]>([]);
   const [experienceYears, setExperienceYears] = useState<number | "">("");
@@ -41,7 +41,7 @@ const ProfessionInfo = ({ user }: { user: any }) => {
           setClinicalAddress(info.profile.clinicalAddress ?? "");
           setPhone(info.user.phone ?? "");
           setName((p: any) => p || info.user.name || "");
-          setEmail((e: any) => e || info.user.email || "");
+          setCity((e: any) => e || info.user.city || "");
         }
       } catch (err) {
         // ignore for now
@@ -55,7 +55,7 @@ const ProfessionInfo = ({ user }: { user: any }) => {
   const handleSave = async () => {
     const payload: any = {};
     if (name && name !== user?.name) payload.name = name;
-    if (email && email !== user?.email) payload.email = email;
+    if (city && city !== user?.city) payload.city = city;
     if (phone) payload.phone = phone;
     if (specialization && specialization.length > 0)
       payload.specialization = specialization;
@@ -141,12 +141,12 @@ const ProfessionInfo = ({ user }: { user: any }) => {
               />
             </div>
             <div>
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="city">City</Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="city"
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
                 className="mt-2"
               />
             </div>

@@ -3,7 +3,7 @@ import { z } from "zod";
 export const ProfessionalSchema = z
   .object({
     name: z.string().min(1).optional(),
-    email: z.email().optional(),
+    city: z.string().optional(),
     phone: z.string().optional(),
     specialization: z.array(z.string()).optional(),
     experienceYears: z.number().int().min(0).optional(),

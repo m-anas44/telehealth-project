@@ -20,7 +20,7 @@ export async function GET() {
     }).lean();
 
     const user = await User.findById(session.user.id)
-      .select("name email phone")
+      .select("name email phone city")
       .lean();
 
     return NextResponse.json({ profile, user }, { status: 200 });
@@ -46,7 +46,7 @@ export async function PUT(req: Request) {
       clinicalAddress,
       phone,
       name,
-      email,
+      city,
     } = body;
 
     const hasAnyField =
@@ -56,7 +56,7 @@ export async function PUT(req: Request) {
       clinicalAddress !== undefined ||
       phone !== undefined ||
       name !== undefined ||
-      email !== undefined;
+      city !== undefined;
 
     if (!hasAnyField) {
       return NextResponse.json(
@@ -99,10 +99,10 @@ export async function PUT(req: Request) {
       await profile.save();
     }
 
-    if (name !== undefined || email !== undefined || phone !== undefined) {
+    if (name !== undefined || city !== undefined || phone !== undefined) {
       const update: Record<string, any> = {};
       if (name !== undefined) update.name = name;
-      if (email !== undefined) update.email = email;
+      if (city !== undefined) update.city = city;
       if (phone !== undefined) update.phone = phone;
 
       await User.findByIdAndUpdate(userId, update);

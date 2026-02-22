@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import AIAppointment from "../_components/appointments/AIAppointment";
 import { getPatientAppointments } from "@/handlers/appointmentHanlder";
+import Link from "next/link";
 
 interface Appointment {
   _id: string;
@@ -85,10 +86,12 @@ const Appointments = () => {
             Filter
           </Button>
         </div>
-        <Button className="bg-[#0891b2]" onClick={() => setShowBooking(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Book Appointment
-        </Button>
+        <Link href={"/patient/appointments/book"}>
+          <Button className="bg-[#0891b2]" onClick={() => setShowBooking(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Book Appointment
+          </Button>
+        </Link>
       </div>
 
       {/* Appointments Tabs */}
