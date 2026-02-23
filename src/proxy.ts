@@ -44,5 +44,4 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   matcher: ["/patient/:path*", "/doctor/:path*", "/admin/:path*"],
-  runtime: "edge",
 };
