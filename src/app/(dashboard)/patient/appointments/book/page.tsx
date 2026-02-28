@@ -40,10 +40,8 @@ export default function BookAppointmentPage() {
   const fetchDoctors = useCallback(async (query: string) => {
     setLoading(true);
     const data = await getDoctors({ query, limit: 12 });
-    console.log("doctors: ", data);
     if (data) {
       setDoctors(data.profiles);
-      console.log(data.profiles);
     }
     setLoading(false);
   }, []);
@@ -92,7 +90,7 @@ export default function BookAppointmentPage() {
         </div>
 
         {/* AI Suggestion Banner */}
-        <AISuggestionBanner />
+        <AISuggestionBanner allDoctors={doctors} />
       </div>
 
       {/* --- Search & Filter Bar --- */}
