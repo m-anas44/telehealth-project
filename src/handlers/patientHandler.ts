@@ -109,3 +109,14 @@ export async function getPatientMedicalHistory() {
     throw new Error(err.response?.data?.message || "Failed to fetch profile");
   }
 }
+
+export async function getPatientMedicalDocuments() {
+  try {
+    const { data } = await axios.get("/api/patient/medicalHistory/documents", {
+      withCredentials: true,
+    });
+    return data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || "Failed to fetch documents");
+  }
+}

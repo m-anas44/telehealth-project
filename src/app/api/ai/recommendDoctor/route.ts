@@ -1,5 +1,5 @@
 import connectDB from "@/db/connectDB";
-import { askAI } from "@/lib/ai-service";
+import { askAI } from "@/lib/ai/ai-service";
 import { authOptions } from "@/lib/auth";
 import { DoctorProfile } from "@/models/doctorProfile";
 import MedicalHistory from "@/models/medicalHistory";

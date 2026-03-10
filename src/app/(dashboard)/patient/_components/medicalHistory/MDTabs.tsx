@@ -2,118 +2,92 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DocumentTab from "./DocumentTab";
 import DiagnosisTab from "./DiagnosisTab";
 import PerscriptionTab from "./PrescriptionsTab";
-const MDTabs = () => {
-  const documents = [
-    {
-      id: "1",
-      name: "Blood Test Results - Complete Blood Count",
-      type: "Lab Report",
-      date: "2026-01-10",
-      doctor: "Dr. Sarah Johnson",
-      verified: true,
-      fileType: "PDF",
-      size: "2.4 MB",
-    },
-    {
-      id: "2",
-      name: "Prescription - Cardiovascular Medication",
-      type: "Prescription",
-      date: "2026-01-08",
-      doctor: "Dr. Sarah Johnson",
-      verified: true,
-      fileType: "PDF",
-      size: "156 KB",
-    },
-    {
-      id: "3",
-      name: "Chest X-Ray Report",
-      type: "Imaging",
-      date: "2025-12-20",
-      doctor: "Dr. Michael Chen",
-      verified: true,
-      fileType: "PDF",
-      size: "5.8 MB",
-    },
-    {
-      id: "4",
-      name: "Annual Physical Examination",
-      type: "Checkup Report",
-      date: "2025-12-15",
-      doctor: "Dr. Michael Chen",
-      verified: true,
-      fileType: "PDF",
-      size: "1.2 MB",
-    },
-  ];
-  const diagnoses = [
-    {
-      id: "1",
-      diagnosis: "Hypertension Stage 1",
-      date: "2026-01-08",
-      doctor: "Dr. Sarah Johnson",
-      status: "Active",
-      notes:
-        "Blood pressure consistently above 130/80. Prescribed medication and lifestyle modifications.",
-    },
-    {
-      id: "2",
-      diagnosis: "Vitamin D Deficiency",
-      date: "2025-12-15",
-      doctor: "Dr. Michael Chen",
-      status: "Under Treatment",
-      notes: "Low vitamin D levels detected. Prescribed supplements.",
-    },
-  ];
+import { useEffect, useState, useMemo } from "react";
+import { getPatientMedicalDocuments } from "@/handlers/patientHandler";
+import CardSkeleton from "../skeletons/CardSkeleton";
 
-  const prescriptions = [
-    {
-      id: "1",
-      medication: "Lisinopril 10mg",
-      dosage: "Once daily",
-      duration: "3 months",
-      date: "2026-01-08",
-      doctor: "Dr. Sarah Johnson",
-      status: "Active",
-    },
-    {
-      id: "2",
-      medication: "Vitamin D3 2000 IU",
-      dosage: "Once daily",
-      duration: "6 months",
-      date: "2025-12-15",
-      doctor: "Dr. Michael Chen",
-      status: "Active",
-    },
-  ];
+const MDTabs = () => {
+  const [loading, setLoading] = useState(true);
+  const [medicalData, setMedicalData] = useState<any>(null);
+
+  const fetchRecords = async () => {
+    try {
+      const response = await getPatientMedicalDocuments();
+      console.log("response from client: ", response.data);
+      setMedicalData(response.data);
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecords();
+  }, []);
+
+  // Categorize documents
+  const categorizedDocuments = useMemo(() => {
+    return {
+      reports: medicalData?.reports || [],
+      xrays: medicalData?.xrays || [],
+      prescriptions: medicalData?.prescriptions || [],
+      other: medicalData?.other || [],
+    };
+  }, [medicalData]);
 
   return (
     <div>
-      <Tabs defaultValue="documents">
+      <Tabs defaultValue="reports">
         <TabsList>
-          <TabsTrigger value="documents">
-            Documents ({documents.length})
+          <TabsTrigger value="reports">
+            Reports ({categorizedDocuments.reports.length})
           </TabsTrigger>
-          <TabsTrigger value="diagnoses">
-            Diagnoses ({diagnoses.length})
+          <TabsTrigger value="xrays">
+            X-Rays ({categorizedDocuments.xrays.length})
           </TabsTrigger>
           <TabsTrigger value="prescriptions">
-            Prescriptions ({prescriptions.length})
+            Prescriptions ({categorizedDocuments.prescriptions.length})
+          </TabsTrigger>
+          <TabsTrigger value="other">
+            Other ({categorizedDocuments.other.length})
           </TabsTrigger>
         </TabsList>
 
-        {/* Documents Tab */}
-        <TabsContent value="documents" className="space-y-4 mt-4">
-          <DocumentTab documents={documents} />
+        {/* Reports Tab */}
+        <TabsContent value="reports" className="space-y-4 mt-4">
+          {loading ? (
+            <CardSkeleton />
+          ) : (
+            <DocumentTab documents={categorizedDocuments.reports} />
+          )}
         </TabsContent>
 
-        {/* Diagnoses Tab */}
-        <TabsContent value="diagnoses" className="space-y-4 mt-4">
-          <DiagnosisTab diagnoses={diagnoses} />
+        {/* X-Rays Tab */}
+        <TabsContent value="xrays" className="space-y-4 mt-4">
+          {loading ? (
+            <CardSkeleton />
+          ) : (
+            <DocumentTab documents={categorizedDocuments.xrays} />
+          )}
         </TabsContent>
 
         {/* Prescriptions Tab */}
         <TabsContent value="prescriptions" className="space-y-4 mt-4">
-          <PerscriptionTab prescriptions={prescriptions} />
+          {loading ? (
+            <CardSkeleton />
+          ) : (
+            <DocumentTab documents={categorizedDocuments.prescriptions} />
+          )}
+        </TabsContent>
+
+        {/* Other Tab */}
+        <TabsContent value="other" className="space-y-4 mt-4">
+          {loading ? (
+            <CardSkeleton />
+          ) : (
+            <DocumentTab documents={categorizedDocuments.other} />
+          )}
         </TabsContent>
       </Tabs>
     </div>
