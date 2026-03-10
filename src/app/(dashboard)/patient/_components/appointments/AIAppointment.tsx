@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Bot, Mic, X, Volume2, Square } from "lucide-react";
+import { Bot, Mic, Square } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import axios from "axios";
-import { getDoctorAvailability } from "@/lib/ai/appointmentToolFunctions";
 
 const AIAppointment = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,23 +24,6 @@ const AIAppointment = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-// useEffect(() => {
-//   const test = async () => {
-//     console.log("--- Testing Availability ---");
-//     try {
-//       const response = await fetch("/api/debug", { method: "GET" });
-      
-//       // FIX: Data ko extract karna zaroori hai
-//       const data = await response.json(); 
-      
-//       console.log("Response we got:- ", data); // Ab yahan slots dikhein ge
-//     } catch (err) {
-//       console.error("Fetch Error:", err);
-//     }
-//   };
-  
-//   test();
-// }, []);
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
