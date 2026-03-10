@@ -27,7 +27,7 @@ const ProfileTabs = ({ user }: { user: any }) => {
 
         {/* Credentials */}
         <TabsContent value="credentials" className="space-y-6 mt-6">
-          <Credentials user={user} />
+          <Credentials />
         </TabsContent>
 
         {/* Personal Settings */}

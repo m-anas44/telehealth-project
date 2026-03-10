@@ -64,71 +64,104 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
     ? new Date(apt.time).toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
+        hour12: true,
       })
     : "No Time";
 
   return (
-    <Card className="py-1">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-4">
-          <div className="relative w-16 h-16 bg-[#0891b2] rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
-            {imgUrl ? (
-              <Image
-                src={imgUrl}
-                alt={apt.doctorName}
-                fill
-                className="object-cover"
-                sizes="64px"
-              />
-            ) : (
-              <span className="text-white text-xl font-semibold">
-                {apt.doctorName?.charAt(0)}
-              </span>
-            )}
-          </div>
+    <Card className="overflow-hidden border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-slate-300 group py-4">
+      <CardContent className="p-0">
+        <div className="flex flex-col sm:flex-row">
+          {/* 1. Left Section: Profile & Status Indicator */}
+          <div className="relative flex items-center gap-4 p-4 sm:p-6 flex-1">
+            <div
+              className={`absolute left-0 top-0 bottom-0 w-1 ${getStatusColor(apt.status).includes("bg-green") ? "bg-emerald-500" : "bg-amber-500"}`}
+            />
 
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-gray-900">{apt.doctorName}</h3>
-              {apt.specialization.map((spec, i) => (
-                <Badge variant="outline" className="capitalize" key={i}>
-                  {spec}
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shrink-0 shadow-inner bg-slate-100 flex items-center justify-center ring-4 ring-white">
+              {imgUrl ? (
+                <Image
+                  src={imgUrl}
+                  alt={apt.doctorName}
+                  fill
+                  className="object-cover transition-transform group-hover:scale-110"
+                  sizes="80px"
+                />
+              ) : (
+                <span className="text-slate-400 text-xl font-bold uppercase">
+                  {apt.doctorName?.charAt(0)}
+                </span>
+              )}
+            </div>
+
+            <div className="flex-1 space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-bold text-slate-900 text-lg leading-tight">
+                  {apt.doctorName}
+                </h3>
+                <Badge
+                  className={`${getStatusColor(apt.status)} text-[10px] uppercase tracking-wider px-2 py-0 border-none`}
+                >
+                  {apt.status}
                 </Badge>
-              ))}
-              <Badge className={getStatusColor(apt.status)}>{apt.status}</Badge>
-            </div>
+              </div>
 
-            <div className="flex items-center gap-6 text-sm text-gray-600">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" /> {appointmentDate}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-4 h-4" /> {appointmentTime}
-              </span>
-              <span className="flex items-center gap-1 capitalize">
-                {isOnline ? (
-                  <Video className="w-4 h-4" />
-                ) : (
-                  <MapPin className="w-4 h-4" />
-                )}
-                {apt.type}
-              </span>
+              <div className="flex flex-wrap gap-1">
+                {apt.specialization.map((spec, i) => (
+                  <span
+                    key={i}
+                    className="text-[11px] font-medium text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-md border border-cyan-100 capitalize"
+                  >
+                    {spec}
+                  </span>
+                ))}
+              </div>
+
+              {/* Appointment Meta Info */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1">
+                <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
+                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <span>{appointmentDate}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
+                  <Clock className="w-4 h-4 text-slate-400" />
+                  <span>{appointmentTime}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium capitalize">
+                  {isOnline ? (
+                    <Video className="w-4 h-4 text-emerald-500" />
+                  ) : (
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                  )}
+                  <span>{apt.type}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-2">
-            {apt.status === "confirmed" && isOnline && (
-              <Button className="bg-[#10b981]">
-                <Video className="w-4 h-4 mr-2" /> Join Call
+          {/* 2. Right Section: Action Buttons */}
+          <div className="flex items-center bg-slate-50/50 sm:bg-transparent border-t sm:border-t-0 sm:border-l border-slate-100 p-4 sm:p-6">
+            <div className="grid grid-cols-2 sm:flex sm:flex-col lg:flex-row gap-2 w-full sm:w-auto">
+              {apt.status === "confirmed" && isOnline && (
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm col-span-2 lg:col-span-1 h-10 px-6">
+                  <Video className="w-4 h-4 mr-2" /> Join Call
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                className="h-10 bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm font-medium"
+              >
+                Reschedule
               </Button>
-            )}
-            <Button variant="outline">Reschedule</Button>
-            <Button
-              variant="outline"
-              className="text-[#ef4444] hover:bg-red-50"
-            >
-              Cancel
-            </Button>
+
+              <Button
+                variant="ghost"
+                className="h-10 text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 font-medium transition-colors"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>

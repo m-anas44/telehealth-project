@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import AIAppointment from "../_components/appointments/AIAppointment";
 import { getPatientAppointments } from "@/handlers/appointmentHanlder";
 import Link from "next/link";
+import AppointmentSkeleton from "../_components/skeletons/AppointmentSkeleton";
 
 interface Appointment {
   _id: string;
@@ -105,9 +106,7 @@ const Appointments = () => {
         </TabsList>
 
         {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-gray-400" />
-          </div>
+          <AppointmentSkeleton />
         ) : (
           <>
             <TabsContent value="upcoming" className="space-y-4 mt-4">
