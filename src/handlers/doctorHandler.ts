@@ -191,10 +191,40 @@ export async function getDoctors({
     const { data } = await axios.get(`/api/doctor?${params.toString()}`, {
       withCredentials: true,
     });
-console.log("fron handler: ", data)
+    console.log("fron handler: ", data);
     return data;
   } catch (error) {
     console.error("API Error:", error);
     return null;
+  }
+}
+
+export async function getDoctorAppointments() {
+  try {
+    const { data } = await axios.get("/api/appointment/doctor/list", {
+      withCredentials: true,
+    });
+    return data;
+  } catch (err: any) {
+    throw new Error(
+      err?.response?.data?.message || err?.message || "Failed to fetch appointments"
+    );
+  }
+}
+
+export async function confirmAppointment(appointmentId: string) {
+  try {
+    const { data } = await axios.put(
+      "/api/appointment/doctor/confirm",
+      { appointmentId },
+      {
+        withCredentials: true,
+      }
+    );
+    return data;
+  } catch (err: any) {
+    throw new Error(
+      err?.response?.data?.message || err?.message || "Failed to confirm appointment"
+    );
   }
 }

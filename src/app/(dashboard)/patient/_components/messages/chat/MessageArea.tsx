@@ -1,94 +1,143 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Paperclip, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { getMessages, postMessage } from "@/handlers/chatHandler";
+import { getSocket } from "@/lib/socket";
+import { useSession } from "next-auth/react";
 
-const MessageArea = () => {
+interface Message {
+  _id: string;
+  roomId?: string;
+  senderId: string;
+  content: string;
+  createdAt: string;
+  type?: string;
+}
+
+interface MessageAreaProps {
+  selectedChat: any;
+}
+
+const MessageArea = ({ selectedChat }: MessageAreaProps) => {
   const [messageInput, setMessageInput] = useState("");
-  const messages = [
-    {
-      id: "1",
-      sender: "patient",
-      message:
-        "Good morning Dr. Johnson, I wanted to check in about my blood pressure readings from this week.",
-      timestamp: "9:45 AM",
-    },
-    {
-      id: "2",
-      sender: "doctor",
-      message:
-        "Good morning! Thank you for following up. Let me review the readings you sent.",
-      timestamp: "9:50 AM",
-    },
-    {
-      id: "3",
-      sender: "doctor",
-      message:
-        "Your blood pressure readings look good. The average is around 128/82, which shows improvement. Continue with the current medication dosage.",
-      timestamp: "9:52 AM",
-    },
-    {
-      id: "4",
-      sender: "patient",
-      message: "That's great to hear! Should I continue monitoring daily?",
-      timestamp: "9:55 AM",
-    },
-    {
-      id: "5",
-      sender: "doctor",
-      message:
-        "Yes, please continue daily monitoring for another week. If readings remain stable, we can reduce to weekly checks. Feel free to message me if you notice any concerning changes.",
-      timestamp: "10:00 AM",
-    },
-  ];
+  const [messages, setMessages] = useState<Message[]>([]);
+  const socketRef = React.useRef<any>(null);
+  const messagesEndRef = React.useRef<HTMLDivElement | null>(null);
 
-  const handleSendMessage = () => {
-    if (messageInput.trim()) {
-      // Mock send
-      setMessageInput("");
+  // load history when room changes
+  useEffect(() => {
+    if (!selectedChat) return;
+
+    async function init() {
+      try {
+        const { messages } = await getMessages(selectedChat.raw.id);
+        setMessages(messages);
+      } catch (e) {
+        console.error("failed to load messages", e);
+      }
+
+      const socket = getSocket();
+      socketRef.current = socket;
+
+      // connect if not connected
+      if (!socket.connected) {
+        socket.connect();
+      }
+
+      // join room
+      socket.emit("join_room", selectedChat.raw.id);
+
+      // listener
+      const receiveHandler = (msg: Message) => {
+        if (msg.roomId === selectedChat.raw.id) {
+          setMessages((prev) => [...prev, msg]);
+        }
+      };
+
+      socket.on("receive_message", receiveHandler);
+
+      return () => {
+        socket.off("receive_message", receiveHandler);
+      };
     }
+    init();
+  }, [selectedChat]);
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    const text = messageInput.trim();
+    if (!text || !selectedChat) return;
+
+    const socket = socketRef.current;
+    const payload = {
+      roomId: selectedChat.raw.id,
+      content: text,
+      senderId: session?.user?.id || "",
+    };
+
+    if (socket && socket.connected) {
+      socket.emit("send_message", payload);
+    } else {
+      // fallback via HTTP
+      try {
+        await postMessage(selectedChat.raw.id, { content: text });
+      } catch (err) {
+        console.error("message fallback failed", err);
+      }
+    }
+
+    setMessageInput("");
   };
+
   return (
-    <div>
-      <CardContent className="flex-1 overflow-y-auto p-6 space-y-4">
+    <div className="flex-1 flex flex-col justify-between">
+      <CardContent className="flex-1 overflow-y-auto p-6">
         {messages.map((msg) => (
           <div
-            key={msg.id}
-            className={`flex ${msg.sender === "patient" ? "justify-end" : "justify-start"}`}
+            key={msg._id}
+            className={`flex ${
+              msg.senderId !== selectedChat?.raw?.patientId
+                ? "justify-end"
+                : "justify-start"
+            }`}
           >
             <div
               className={`max-w-[70%] p-4 rounded-lg ${
-                msg.sender === "patient"
+                msg.senderId !== selectedChat?.raw?.patientId
                   ? "bg-[#0891b2] text-white"
                   : "bg-[#f8fafc] text-gray-900 border"
               }`}
             >
-              <p className="mb-1">{msg.message}</p>
-              <p
-                className={`text-xs ${
-                  msg.sender === "patient" ? "text-white/70" : "text-gray-500"
-                }`}
-              >
-                {msg.timestamp}
+              <p className="mb-1">{msg.content}</p>
+              <p className={`text-xs ${
+                msg.senderId !== selectedChat?.raw?.patientId
+                  ? " text-gray-100"
+                  : " text-gray-400"
+              }`}>
+                {new Date(msg.createdAt).toLocaleTimeString()}
               </p>
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </CardContent>
 
       {/* Message Input */}
-      <div className="border-t p-4">
+      <div className="border-t p-4 mt-auto">
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon">
-            <Paperclip className="w-4 h-4" />
-          </Button>
           <Input
             placeholder="Type your message..."
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            onKeyUp={(e) => e.key === "Enter" && handleSendMessage()}
             className="flex-1"
           />
           <Button onClick={handleSendMessage} className="bg-[#0891b2]">

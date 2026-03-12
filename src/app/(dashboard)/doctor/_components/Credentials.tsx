@@ -20,9 +20,7 @@ const toDateInputValue = (dateString?: string) => {
   return new Date(dateString).toISOString().split("T")[0];
 };
 
-
-
-const Credentials = ({ user }: { user: any }) => {
+const Credentials = () => {
   const [loading, setLoading] = useState(false);
   const [licenseNo, setLicenseNo] = useState("");
   const [licenseState, setLicenseState] = useState("");
@@ -63,10 +61,10 @@ const Credentials = ({ user }: { user: any }) => {
       if (signedUrl) {
         window.open(signedUrl, "_blank");
       } else {
-        toast.error("Could not generate secure view link");
+        toast.error("Can't view this time!");
       }
     } catch (err) {
-      toast.error("Error accessing document");
+      // silent fail
     }
   };
 
