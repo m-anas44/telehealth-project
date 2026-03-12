@@ -6,7 +6,11 @@ import { Calendar, Clock, MapPin, Video } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getViewUrl } from "@/handlers/doctorHandler";
+import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { createRoomForAppointment } from "@/handlers/chatHandler";
 
 interface Appointment {
   _id: string;
@@ -37,6 +41,37 @@ const getStatusColor = (status: string) => {
 const AppointmentCard = ({ apt }: { apt: Appointment }) => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const isOnline = apt.type === "online";
+
+  const {data: session, status} = useSession()
+  const user = session?.user
+  const client = useStreamVideoClient();
+  const router = useRouter()
+
+  const handleJoinCall = async () => {
+    if (!client || !user || !isOnline) return;
+
+    try {
+      const callId = apt._id; 
+      const call = client.call("default", callId);
+
+      const startAt = new Date(apt.day);
+      const [hours, minutes] = apt.time.split(':');
+      startAt.setHours(parseInt(hours), parseInt(minutes));
+
+      await call.getOrCreate({
+        data: {
+          starts_at: startAt.toISOString(),
+          custom: {
+            description: `Appointment with Dr. ${apt.doctorName}`,
+          },
+        },
+      });
+
+      router.push(`/meeting/${callId}`);
+    } catch (error) {
+      console.error("Stream Meeting Error:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchImg = async () => {
@@ -141,19 +176,29 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
 
           {/* 2. Right Section: Action Buttons */}
           <div className="flex items-center bg-slate-50/50 sm:bg-transparent border-t sm:border-t-0 sm:border-l border-slate-100 p-4 sm:p-6">
-            <div className="grid grid-cols-2 sm:flex sm:flex-col lg:flex-row gap-2 w-full sm:w-auto">
+            <div className="flex flex-col gap-2 w-full sm:w-auto">
               {apt.status === "confirmed" && isOnline && (
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm col-span-2 lg:col-span-1 h-10 px-6">
+                <Button
+                onClick={handleJoinCall}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm col-span-2 lg:col-span-1 h-10 px-6">
                   <Video className="w-4 h-4 mr-2" /> Join Call
                 </Button>
               )}
 
-              <Button
-                variant="outline"
-                className="h-10 bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm font-medium"
-              >
-                Reschedule
-              </Button>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    try {
+                      const room = await createRoomForAppointment(apt._id);
+                      router.push(`/patient/messages?room=${room._id}`);
+                    } catch (error) {
+                      console.error("failed to open chat", error);
+                    }
+                  }}
+                  className="h-10 bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm font-medium"
+                >
+                  Message
+                </Button>
 
               <Button
                 variant="ghost"

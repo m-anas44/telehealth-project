@@ -5,7 +5,6 @@ import { appointments } from "@/app/data/doctorDashboard";
 import { Button } from "@/components/ui/button";
 import {
   Calendar,
-  Clock,
   Video,
   MapPin,
   ChevronLeft,
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import AppointmentList from "../_components/schedule/AppointmentList";
 
 interface DoctorScheduleProps {
   onPatientSelect: (patient: any) => void;
@@ -93,114 +93,7 @@ const SchedulePage: React.FC<DoctorScheduleProps> = ({ onPatientSelect }) => {
       </Card>
 
       {/* Appointments List */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#0891b2]" />
-            Today's Appointments
-          </CardTitle>
-          <Badge className="bg-[#10b981]">
-            {appointments.filter((a) => a.status === "confirmed").length}{" "}
-            Confirmed
-          </Badge>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {appointments.map((apt) => (
-            <div
-              key={apt.id}
-              className="flex items-center gap-4 p-4 bg-[#f8fafc] rounded-lg border-2 border-gray-200 hover:border-[#0891b2] transition-colors"
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <div className="text-center px-3 py-2 bg-white rounded-lg border">
-                  <p className="text-xs text-gray-500">Time</p>
-                  <p className="font-semibold text-gray-900 text-sm">
-                    {apt.time}
-                  </p>
-                  <p className="text-xs text-gray-500">{apt.duration}</p>
-                </div>
-                <Avatar>
-                  <AvatarFallback className="bg-[#0891b2] text-white">
-                    {apt.avatar}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold text-gray-900">
-                      {apt.patient}
-                    </h4>
-                    <Badge variant="outline" className="text-xs">
-                      {apt.type === "Video Consultation" ? (
-                        <Video className="w-3 h-3 mr-1" />
-                      ) : (
-                        <MapPin className="w-3 h-3 mr-1" />
-                      )}
-                      {apt.type}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600">{apt.reason}</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Badge
-                  className={
-                    apt.status === "confirmed" ? "bg-[#10b981]" : "bg-[#f59e0b]"
-                  }
-                >
-                  {apt.status}
-                </Badge>
-                <Button
-                  className="bg-[#0891b2]"
-                  onClick={() =>
-                    onPatientSelect({ name: apt.patient, avatar: apt.avatar })
-                  }
-                >
-                  {apt.type === "Video Consultation" ? (
-                    <>
-                      <Video className="w-4 h-4 mr-2" />
-                      Join Call
-                    </>
-                  ) : (
-                    "View Details"
-                  )}
-                </Button>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Availability Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[#10b981]" />
-            Weekly Availability
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            {weekDays.map((day, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 bg-[#f8fafc] rounded-lg"
-              >
-                <div>
-                  <p className="font-medium text-gray-900">{day}day</p>
-                  <p className="text-sm text-gray-600">9:00 AM - 5:00 PM</p>
-                </div>
-                <input
-                  type="checkbox"
-                  defaultChecked={index < 5}
-                  className="w-5 h-5 rounded"
-                />
-              </div>
-            ))}
-          </div>
-          <Button className="w-full mt-4 bg-[#10b981]">
-            Update Availability
-          </Button>
-        </CardContent>
-      </Card>
+      <AppointmentList />
     </div>
   );
 };
